@@ -32,12 +32,12 @@ import (
 	aaws "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/dustin/go-humanize"
 	"github.com/go-sql-driver/mysql"
 	"github.com/transparency-dev/tessera"
 	taws "github.com/transparency-dev/tessera/storage/aws"
 	aws_as "github.com/transparency-dev/tessera/storage/aws/antispam"
 	"github.com/transparency-dev/tesseract"
+	"github.com/transparency-dev/tesseract/internal/size"
 	"github.com/transparency-dev/tesseract/storage"
 	"github.com/transparency-dev/tesseract/storage/aws"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -246,7 +246,7 @@ func newAWSStorageFunc(awsCfg taws.Config) func(ctx context.Context, signer note
 			}
 		}
 
-		antispamCacheSize, unit, error := humanize.ParseSI(*inMemoryAntispamCacheSize)
+		antispamCacheSize, unit, error := size.ParseSI(*inMemoryAntispamCacheSize)
 		if unit != "" {
 			return nil, fmt.Errorf("invalid antispam cache size, used unit %q, want none", unit)
 		}

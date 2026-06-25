@@ -37,9 +37,9 @@ import (
 
 	"cloud.google.com/go/spanner"
 	gcs "cloud.google.com/go/storage"
-	"github.com/dustin/go-humanize"
 	"github.com/transparency-dev/tessera"
 	tgcp "github.com/transparency-dev/tessera/storage/gcp"
+	"github.com/transparency-dev/tesseract/internal/size"
 	gcp_as "github.com/transparency-dev/tessera/storage/gcp/antispam"
 	"github.com/transparency-dev/tesseract"
 	"github.com/transparency-dev/tesseract/internal/logger"
@@ -296,7 +296,7 @@ func newGCPStorage(gc *gcs.Client, hc *http.Client) func(ctx context.Context, si
 			}
 		}
 
-		antispamCacheSize, unit, error := humanize.ParseSI(*inMemoryAntispamCacheSize)
+		antispamCacheSize, unit, error := size.ParseSI(*inMemoryAntispamCacheSize)
 		if unit != "" {
 			return nil, fmt.Errorf("invalid antispam cache size, used unit %q, want none", unit)
 		}

@@ -21,7 +21,6 @@ import (
 	"strings"
 	"time"
 
-	movingaverage "github.com/RobinUS2/golang-moving-average"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -107,7 +106,7 @@ func (c *tuiController) Run(ctx context.Context) {
 }
 
 func (c *tuiController) updateStatsLoop(ctx context.Context, interval time.Duration) {
-	formatMovingAverage := func(ma *movingaverage.ConcurrentMovingAverage) string {
+	formatMovingAverage := func(ma *ConcurrentMovingAverage) string {
 		aMin, _ := ma.Min()
 		aMax, _ := ma.Max()
 		aAvg := ma.Avg()
@@ -117,7 +116,7 @@ func (c *tuiController) updateStatsLoop(ctx context.Context, interval time.Durat
 	ticker := time.NewTicker(interval)
 	lastSize := c.hammer.tracker.LatestConsistent.Size
 	maSlots := int((30 * time.Second) / interval)
-	growth := movingaverage.New(maSlots)
+	growth := NewMovingAverage(maSlots)
 	for {
 		select {
 		case <-ctx.Done():

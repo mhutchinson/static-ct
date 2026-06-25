@@ -19,8 +19,6 @@ import (
 	"errors"
 	"log/slog"
 	"time"
-
-	movingaverage "github.com/RobinUS2/golang-moving-average"
 )
 
 func NewHammerAnalyser(treeSizeFn func() uint64) *HammerAnalyser {
@@ -30,8 +28,8 @@ func NewHammerAnalyser(treeSizeFn func() uint64) *HammerAnalyser {
 		treeSizeFn:      treeSizeFn,
 		SeqLeafChan:     leafSampleChan,
 		ErrChan:         errChan,
-		IntegrationTime: movingaverage.Concurrent(movingaverage.New(30)),
-		QueueTime:       movingaverage.Concurrent(movingaverage.New(30)),
+		IntegrationTime: NewConcurrentMovingAverage(30),
+		QueueTime:       NewConcurrentMovingAverage(30),
 	}
 }
 
@@ -41,8 +39,8 @@ type HammerAnalyser struct {
 	SeqLeafChan chan LeafTime
 	ErrChan     chan error
 
-	QueueTime       *movingaverage.ConcurrentMovingAverage
-	IntegrationTime *movingaverage.ConcurrentMovingAverage
+	QueueTime       *ConcurrentMovingAverage
+	IntegrationTime *ConcurrentMovingAverage
 }
 
 func (a *HammerAnalyser) Run(ctx context.Context) {

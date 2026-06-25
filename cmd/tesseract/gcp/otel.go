@@ -15,7 +15,9 @@
 package main
 
 import (
+	"crypto/rand"
 	"context"
+	"encoding/hex"
 	"errors"
 	"log/slog"
 	"os"
@@ -31,8 +33,6 @@ import (
 
 	mexporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
 	texporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
-
-	"github.com/google/uuid"
 )
 
 // initOTel initialises the open telemetry support for metrics and tracing.
@@ -56,8 +56,8 @@ func initOTel(ctx context.Context, traceFraction float64, origin string, project
 
 	instanceID, err := os.Hostname()
 	if err != nil {
-		slog.ErrorContext(ctx, "os.Hostname() failed, setting OTel service instance ID to UUID", slog.Any("error", err))
-		instanceID = uuid.NewString()
+		slog.ErrorContext(ctx, "os.Hostname() failed, setting OTel service instance ID to random ID", slog.Any("error", err))
+		instanceID = randomID()
 	}
 	resources, err := resource.New(ctx,
 		resource.WithTelemetrySDK(),
@@ -115,4 +115,12 @@ func initOTel(ctx context.Context, traceFraction float64, origin string, project
 		fatal(ctx, "Failed to start exporting Go runtime metrics", slog.Any("error", err))
 	}
 	return shutdown
+}
+
+func randomID() string {
+	b := make([]byte, 16)
+	if _, err := rand.Read(b); err != nil {
+		return "unknown-instance"
+	}
+	return hex.EncodeToString(b)
 }

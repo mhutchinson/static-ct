@@ -32,12 +32,12 @@ import (
 	"time"
 
 	"github.com/dgraph-io/badger/v4"
-	"github.com/dustin/go-humanize"
 	"github.com/transparency-dev/tessera"
 	"github.com/transparency-dev/tessera/api/layout"
 	"github.com/transparency-dev/tessera/client"
 	"github.com/transparency-dev/tessera/storage/posix"
 	tposix_as "github.com/transparency-dev/tessera/storage/posix/antispam"
+	"github.com/transparency-dev/tesseract/internal/size"
 )
 
 var (
@@ -115,12 +115,12 @@ func main() {
 	// Configure antispam storage, if necessary
 	var antispam tessera.Antispam
 	if *persistentAntispam {
-		antispamIndexCacheBytes, error := humanize.ParseBytes(*antispamIndexCacheSize)
+		antispamIndexCacheBytes, error := size.ParseBytes(*antispamIndexCacheSize)
 		if error != nil {
 			slog.ErrorContext(ctx, "Invalid antispam index cache size", slog.Any("error", error))
 			os.Exit(1)
 		}
-		antispamBlockCacheBytes, error := humanize.ParseBytes(*antispamBlockCacheSize)
+		antispamBlockCacheBytes, error := size.ParseBytes(*antispamBlockCacheSize)
 		if error != nil {
 			slog.ErrorContext(ctx, "Invalid antispam block cache size", slog.Any("error", error))
 			os.Exit(1)

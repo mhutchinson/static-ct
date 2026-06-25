@@ -37,9 +37,9 @@ import (
 
 	"github.com/dgraph-io/badger/v4"
 	"github.com/dgraph-io/badger/v4/options"
-	"github.com/dustin/go-humanize"
 	"github.com/transparency-dev/tessera"
 	tposix "github.com/transparency-dev/tessera/storage/posix"
+	"github.com/transparency-dev/tesseract/internal/size"
 	tposix_as "github.com/transparency-dev/tessera/storage/posix/antispam"
 	"github.com/transparency-dev/tesseract"
 	"github.com/transparency-dev/tesseract/storage"
@@ -235,11 +235,11 @@ func newStorage(ctx context.Context, signer note.Signer) (st *storage.CTStorage,
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize POSIX Tessera storage driver: %v", err)
 	}
-	antispamIndexCacheBytes, error := humanize.ParseBytes(*antispamIndexCacheSize)
+	antispamIndexCacheBytes, error := size.ParseBytes(*antispamIndexCacheSize)
 	if error != nil {
 		return nil, fmt.Errorf("invalid antispam index cache size: %v", error)
 	}
-	antispamBlockCacheBytes, error := humanize.ParseBytes(*antispamBlockCacheSize)
+	antispamBlockCacheBytes, error := size.ParseBytes(*antispamBlockCacheSize)
 	if error != nil {
 		return nil, fmt.Errorf("invalid antispam block cache size: %v", error)
 	}
@@ -262,7 +262,7 @@ func newStorage(ctx context.Context, signer note.Signer) (st *storage.CTStorage,
 		return nil, fmt.Errorf("failed to initialize POSIX antispam database: %v", err)
 	}
 
-	antispamCacheSize, unit, error := humanize.ParseSI(*inMemoryAntispamCacheSize)
+	antispamCacheSize, unit, error := size.ParseSI(*inMemoryAntispamCacheSize)
 	if unit != "" {
 		return nil, fmt.Errorf("invalid antispam cache size, used unit %q, want none", unit)
 	}
